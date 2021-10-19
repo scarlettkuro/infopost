@@ -68,9 +68,20 @@ class SiteController extends Controller
             return $this->refresh();
         }
         
+        $newsPost->title = $this->generateRandomText(rand(1,4));
+        $newsPost->body = $this->generateRandomText(rand(8,25));
+        
         return $this->render('add', [
             'model' => $newsPost,
         ]);
         
+    }
+    
+    private function generateRandomText($wordsCount) 
+    {
+        $url = "https://random-word-api.herokuapp.com//word?number=$wordsCount";
+        $json = file_get_contents($url);
+        
+        return implode(' ', json_decode($json));
     }
 }
