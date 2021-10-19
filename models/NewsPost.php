@@ -26,7 +26,7 @@ class NewsPost extends ActiveRecord {
             [
                 'class' => TimestampBehavior::class,
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => 'last_view',
+                    ActiveRecord::EVENT_BEFORE_INSERT => false, //'last_view',
                     ActiveRecord::EVENT_BEFORE_UPDATE => false 
                 ],
             ],
@@ -35,7 +35,22 @@ class NewsPost extends ActiveRecord {
     
     public function getLastView()
     {
+        if (is_null($this->last_view)) 
+        {
+            return NULL;
+        }
+        
         return \DateTime::createFromFormat('U', $this->last_view);
+    }
+
+    /**
+     * @return array the validation rules.
+     */
+    public function rules()
+    {
+        return [
+            [['title', 'body'], 'required'],
+        ];
     }
 
 }
