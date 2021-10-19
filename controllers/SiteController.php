@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\NewsPost;
 
 class SiteController extends Controller
 {
@@ -62,6 +63,23 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+    
+    
+    public function actionPost($id)
+    {
+        $newsPost = NewsPost::findOne($id);
+        
+        if (!isset($newsPost)) 
+        {
+            throw new \yii\web\NotFoundHttpException();
+        }
+        
+        $newsPost->touch('last_view');
+        
+        return $this->render('post', [
+            'newsPost' => $newsPost
+        ]);
     }
 
     /**
