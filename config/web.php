@@ -47,7 +47,8 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'news/<id:\d+>' => 'site/post',
+                'GET news/<id:\d+>' => 'site/post',
+                'POST news/<id:\d+>' => 'site/seen',
             ],
         ],
     ],

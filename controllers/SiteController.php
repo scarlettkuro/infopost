@@ -3,11 +3,9 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
 use app\models\NewsPost;
+use yii\helpers\Url;
 
 class SiteController extends Controller
 {
@@ -51,11 +49,43 @@ class SiteController extends Controller
             throw new \yii\web\NotFoundHttpException();
         }
         
-        $newsPost->touch('last_view');
-        
-        return $this->render('post', [
+        $params = [
             'newsPost' => $newsPost
-        ]);
+        ];
+        
+        if (!\Yii::$app->params['ajaxLastView']) {
+            //set as viewed before page is fully loaded
+            $newsPost->wasSeen();
+        } else {
+            //set as viewed only after pafe is fully loaded
+            $csrfTokenName = \Yii::$app->getRequest()->csrfParam;
+            $csrfToken = \Yii::$app->getRequest()->getCsrfToken();
+            $params = array_merge($params, [
+                'csrfTokenName' => $csrfTokenName,
+                'csrfToken' => $csrfToken,
+                'ajaxUrl' => Url::to(['site/post', 'id' => $newsPost->id])
+            ]);
+        }
+        
+        return $this->render('post', $params);
+    }
+    
+    public function actionSeen($id)
+    {
+        $newsPost = NewsPost::findOne($id);
+        
+        if (!isset($newsPost)) 
+        {
+            return false;
+        }
+        
+        if (\Yii::$app->params['ajaxLastView']) {
+            $newsPost->wasSeen();
+            return true;
+        } 
+        
+        return false;
+        
     }
     
     public function actionAdd() 

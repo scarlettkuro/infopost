@@ -42,6 +42,11 @@ class NewsPost extends ActiveRecord {
         
         return \DateTime::createFromFormat('U', $this->last_view);
     }
+    
+    public function wasSeen() 
+    {
+        $this->touch('last_view');
+    }
 
     /**
      * @return array the validation rules.
