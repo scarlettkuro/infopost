@@ -61,8 +61,15 @@ class SiteController extends Controller
      * @return string
      */
     public function actionIndex()
-    {
-        return $this->render('index');
+    { 
+        $recentViewedPosts = NewsPost::find()
+                ->orderBy('last_view')
+                ->limit(5)
+                ->all();
+        
+        return $this->render('index', [
+            'newsPosts' => $recentViewedPosts
+        ]);
     }
     
     

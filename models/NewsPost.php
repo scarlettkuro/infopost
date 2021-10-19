@@ -26,7 +26,7 @@ class NewsPost extends ActiveRecord {
             [
                 'class' => TimestampBehavior::class,
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => false,
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'last_view',
                     ActiveRecord::EVENT_BEFORE_UPDATE => false 
                 ],
             ],
